@@ -1,0 +1,330 @@
+\documentclass[10pt,landscape]{article}
+\usepackage{multicol}
+\usepackage{calc}
+\usepackage{ifthen}
+\usepackage[landscape]{geometry}
+\usepackage{hyperref}
+\usepackage{mathtools}
+
+% To make this come out properly in landscape mode, do one of the following
+% 1.
+%  pdflatex latexsheet.tex
+%
+% 2.
+%  latex latexsheet.tex
+%  dvips -P pdf  -t landscape latexsheet.dvi
+%  ps2pdf latexsheet.ps
+
+
+% If you're reading this, be prepared for confusion.  Making this was
+% a learning experience for me, and it shows.  Much of the placement
+% was hacked in; if you make it better, let me know...
+
+
+% 2008-04
+% Changed page margin code to use the geometry package. Also added code for
+% conditional page margins, depending on paper size. Thanks to Uwe Ziegenhagen
+% for the suggestions.
+
+% 2006-08
+% Made changes based on suggestions from Gene Cooperman. <gene at ccs.neu.edu>
+
+
+% To Do:
+% \listoffigures \listoftables
+% \setcounter{secnumdepth}{0}
+
+
+% This sets page margins to .5 inch if using letter paper, and to 1cm
+% if using A4 paper. (This probably isn't strictly necessary.)
+% If using another size paper, use default 1cm margins.
+\ifthenelse{\lengthtest { \paperwidth = 11in}}
+{ \geometry{top=.3in,left=.5in,right=.5in,bottom=.4in} }
+{\ifthenelse{ \lengthtest{ \paperwidth = 297mm}}
+	{\geometry{top=1cm,left=1cm,right=1cm,bottom=2cm} }
+	{\geometry{top=1cm,left=1cm,right=1cm,bottom=2cm} }
+}
+
+% Turn off header and footer
+\pagestyle{empty}
+
+
+% Redefine section commands to use less space
+\makeatletter
+\renewcommand{\section}{\@startsection{section}{1}{0mm}%
+	{-1ex plus -.5ex minus -.2ex}%
+	{0.5ex plus .2ex}%x
+	{\normalfont\large\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
+	{-1explus -.5ex minus -.2ex}%
+	{0.5ex plus .2ex}%
+	{\normalfont\normalsize\bfseries}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{0mm}%
+	{-1ex plus -.5ex minus -.2ex}%
+	{1ex plus .2ex}%
+	{\normalfont\small\bfseries}}
+\makeatother
+
+% Define BibTeX command
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+		T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+% Don't print section numbers
+\setcounter{secnumdepth}{0}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt plus 0.5ex}
+
+
+% -----------------------------------------------------------------------
+
+\begin{document}
+	
+	\raggedright
+	\footnotesize
+	\begin{multicols}{3}
+		
+		
+		% multicol parameters
+		% These lengths are set only within the two main columns
+		%\setlength{\columnseprule}{0.25pt}
+		\setlength{\premulticols}{1pt}
+		\setlength{\postmulticols}{1pt}
+		\setlength{\multicolsep}{1pt}
+		\setlength{\columnsep}{2pt}
+		
+		\section{efficiency}
+			\subsection{Slotted Aloha}
+			Maximum efficiency of slotted ALOHA is achieved by finding p* : 
+			$p* = argmax_p (N * p * (1 - p)^{N - 1})$  
+			For $N \to \infty$: max efficiency: $1 / e \approx 0.37$
+			\subsection{Pure ALOHA}
+			Successful transmission prob: $p \cdot (1 - p) ^{2(N-1)}$
+			Max efficiency: $1 / 2e \approx 0.18$
+			\subsection{CSMA/CD}
+			Efficiency = $\dfrac{1}{1 + 5 \cdot \frac{d_{prop}}{d_{trans}}} $
+			
+		\section{CSMA/CD vs CSMA/CA}
+		Carrier Sense Multiple Access (Collision detection / Collision Avoidance)
+		\subsection{Collision detected}
+		\subsubsection{CSMA/CD}
+		Stop transmitting and wait random amount of time before transmitting again
+		\subsubsection{CSMA/CA}
+		Start random backoff counter, while channel is busy, freeze it.
+		When zero: frame is transmitted and wait for ACK.
+		No ACK: max backoff increased and new timer is started
+		\subsection{Binary Exponential Backoff}
+		N subsequent collisions: backoff time chosen from \{$0, 1, 2, ..., 2^n - 1$\}
+		\section{Taking Turns protocols}
+		\subsection{Polling protocol}
+		Master node polls each node in round-robin fashion
+		\subsubsection{Advantages}
+		Eliminates collisions and empty slots that occur in random access protocols
+		\subsubsection{Disadvantages}
+		Polling causes delays, master node: single point of failure
+		\subsection{Token-passing protocol}
+		Only node holding the token can transmit, passing token after max number of frames (or done)
+		\subsubsection{Advantages}
+		eliminates collisions and empty slots
+		\subsubsection{Disadvantages}
+		Complex failure cases: single node failure: crash, lost token
+		\section{"Package names"}
+		\begin{itemize}
+			\item Application: message
+			\item Transport: Segment
+			\item Network: Datagram
+			\item Link: frame
+		\end{itemize}
+		
+		\section{Application Layer}
+		\subsection{Communication between processes}
+		\begin{itemize}
+			\item Client: Process that initiates connection between pair of processes
+			\item Server: Process that waits to be contacted to begin the session
+			\item Socket: The API between application and transport layer
+		\end{itemize}
+		\subsection{Persistent vs non-persistent connections}
+		\subsubsection{Non persistent (HTTP/1)}
+		Start and close connection after each object
+		\subsubsection{Persistent (HTTP/1.1)}
+		open connection, send all objects, close connection
+		\subsection{HTTP/1.1: pipelining}
+		HTTP/1.1 supports pipelining to further reduce RTT
+		\subsection{Caching}
+		Why? reduces response time, avoid bottleneck links, reduce traffic on connection to internet
+		\subsection{HTTP/2}
+		Reduces latency throug multiplexing, request prioritization, server push and compression.
+		Aims to solve HOL blocking problem
+		\subsubsection{HTTP/2 HOL blocking solution: Framing}
+		Each message (object) is broken into small frames
+		request and response frames are interleaved over single TCP connection
+		\subsection{DNS}
+		\subsubsection{Resource records (types)}
+		\begin{itemize}
+			\item A: Provides standard hostname to IP mapping
+			\item NS: route queries along the chain (to new DNS server)
+			\item CNAME: alias hostnames to canonical hostnames
+			\item MX: alias mail server names to canonical mail server names
+		\end{itemize}
+		
+		\section{Transport Layer}
+		\subsection{Connectionless (de)multiplexing using UDP}
+		Client generaly uses random port number, server binds to known application port number, 
+		UDP socket is identified by two tuple (destination IP, destination Port)
+		\subsection{Connection-oriented (de)multiplexing in TCP}
+		TCP sockets are identified by 4-tuple: Source port, dest. port, source IP, dest. IP ;
+		Many to one mapping from sockets to processes
+		
+		\subsection{UDP}
+		UDP is barebones
+		\subsubsection{Why UDP instead of TCP?}
+		Finer application-level control over what data is sent, and when ; 
+		No connection establishment (less delay) ;
+		No connection state (less overhead) ;
+		Smaller packet overhead
+		\subsubsection{UDP checksum}
+		1s complement of sum of all 16-bit words in UDP segment (+ pseudo header)
+		\subsubsection{Limitations of UDP checksum}
+		Optional: all 0's means it hasnt been calculated ;
+		All 1 bit errrors detected ; 
+		not all 2 bit errors are caught ; 
+		
+		\subsection{Automatic Repeat reQuest (ARQ) protocols}
+		based on 3 fundamental capacities: Error detection ; Receiver feedback ; retransmission
+		\subsubsection{Standard ARQ has fundamental flaw}
+		If ACK is corrupt, resent packet : introduces duplicate packets ; 
+		use timeout to detect lost packet: very hard to calculate timeout
+		\subsubsection{Stop and wait: bad performance (not pipelined)}
+		\subsubsection{Go-Back-N}
+		Window size: N \\
+		Sender vars: base, nextseqnum \\
+		We use cumulative ACKS \\
+		Timer for oldest unacknowledged packet: on timeout: retransmit all unACKd packets
+		Receiver vars: expectednextseqnum \\
+		Out of order packet: discard and sent ACK with highest in-order seq num						
+		\subsubsection{Selective Repeat SR}
+		Windows size: N again \\
+		Sender vars: base, nextseqnum \\
+		recvr vars: rcv\_base: sequence number of oldest unACKd packet\\
+		Sender: Data is only transmitted if the next available seq num valls in senders window \\
+		timer for each packet: restransmit when expired
+		Receiver: packet in window: buffer it and send selective ACK
+		\subsubsection{How many distinct seq nums?}
+		Window size N must be less than or equal to half the sequence number space
+		\subsection{TCP}
+		seq num: position of its first byte in the stream \\
+		ACK number: next byte that receiver expects
+		\subsection{Estimating RTT}
+		Vars: SampleRTT, EstimatedRTT (exponential weighted moving average), DevRTT \\
+		$EstimatedRTT = (1 - \alpha) \cdot EstimatedRTT + \alpha \cdot SampleRTT$ alpha usually 0.125 \\
+		$DevRTT = (1 - \beta) \cdot DevRTT + \beta * |SampleRTT - EstimatedRTT|$ beta usually 0.25
+		\subsubsection{Managing timeout}
+		Timeout: Interval = 2 * interval \\
+		EstimatedRTT updated: $interval = EstimatedRTT + 4 \cdot DevRTT$
+		\subsection{Fast retransmission}
+		Lost packets can also be detected by counting duplicate ACKS \\
+		After 3 duplicate ACKS, oldest non-ACKd segment is retransmitted
+		\subsection{Flow Control}
+		Ensures that sender does not send faster than receiver can receive
+		$rwnd = RcvBuffer - [LastByteRCVD - LastByteRead]$
+		Sender: $LastByteSent - LastbyteAcked \leq rwnd$
+		\subsection{Congestion Control}
+		2 types: End to end and Network-assisted
+		\subsubsection{TCP Congestion Control}
+		$LastBytesent - LastByteAcked \leq min(cwind, rwnd)$ \\
+		How is perception perceived? Timeout or duplicate ACKs \\
+		State 1: slow start \\
+		cwnd is initialized to 1 MSS and increased by 1 when ACK.
+		When timeout occurs: ssthresh is set to cwnd/2 and cwnd is reset to 1 MSS
+		When cwnd >= ssthresh TCP transitions into Congestion AVoidance mode
+		Optional: when 3 duplicate ACKS: TCP goes into fast recovery \\
+		State 2: Congestion Avoidance: \\
+		TCP only increases cwnd by 1 MSS every RTT (instead of doubling): when ACK arrives: $cwnd = cwnd + MSS^2 / cwnd$
+		TCP goes back into slow start when timeout occurs or fast recovery after 3 duplicate ACKs\\
+		State 3: Fast recovery: \\
+		ssthresh is set to cwnd/2 and cwnd = ssthresh + 3 * MSS\\
+		When timeout occurs: TCP oges to slow start ;
+			When an ACK arrives for missing segment, go back to collision avoidance (resetting cwnd to ssthres)	
+		\section{Network Layer}
+		\subsection{Forwarding vs routing}
+		\subsubsection{Forwarding}
+		Move packet from routers input link to appropiate output link ;
+		Local decision at very short time ;
+		typically implemented in hardware
+		\subsubsection{Routing}
+		Determine route or path taken by packets from sender to receiver ;
+		Network-wide process that takes longer ; 
+		typically implemented in software
+		\subsection{Destination based forwarding}
+		Entries contain ranges of addresses; longest prefix matching is used
+		\subsection{Queuing in routers}	
+		When input or output queues (buffers) become full, packet loss occurs ;
+		HOL-blocking occurs when a packet in an input queue must wait because its blocked by packet at front of line ;
+		Output port contention occurs when multiple packets are destined for the same output line at the same time
+		\subsection{Packet scheduling techniques in router queues}µ
+		FIFO ; Priority queuing ; Round robin and weighted fair queueing (WFQ)
+		\subsection{Internet Protocol IP}
+		\subsubsection{DHCP}
+		A DHCP server offers several functions to hosts within an organization: automatically assign IP addresses, provide additional information(subnet, local dns, standard gateway, ...) ;
+		Consists of 4 steps: Discovery, Service offer(s), request, acknowledgement ;
+		An assigned IP has a lifetime, which can be extended with a renewal request
+		\subsubsection{NAT}
+		Not enough IP addresses to give every host in every network a unique IP address. ; 
+		NAT offers soltion by associating a set of private addresses with single public one ; 
+		Each internal address:port is associated with a unique port
+		\subsection{Routing algorithms}
+		\subsubsection{The centralized link-state routing algorithm}
+		Assumes entire network topology and costs are known \\
+		Dijkstra:\\ 
+		Initialization: N' = {S} ; $\forall v \in N: D(v) = c(s,v)$ c(s,v) = $\infty$ if they arent direct neighbours\\
+		Repeat: $w = argmin D(v)$ ; $N' =  N' \cup \{w\}$ ; $\forall neigh v of w \wedge v \notin N': D(v) = min(D(v), D(w) + c(w,v))$
+		Until: N' = N \\
+		Distance Vector: Only relies on information obtained from neighbours \\
+		Every node x keeps track of: Estimate distance vector $D_x = [D_x(y): \forall y \in N]$ ; 
+		Cost c(x,v) to each of its direct neighbours ; 
+		Distance vector of each of its neighbours \\
+		Initialization: $\forall y \in N: D_x(y) = c(x,y)$ ; $\forall$ neigh w: send $D_x$ \\
+		Repeat: (whenever link cost changes or DV received from neighbour) $\forall y \in: D_x(y) = min(c(x,v) + D_v(y))$ for all v ;
+		If $D_x$ changed for any destination: send $D_x$ to all neighbours.
+		\subsubsection{Routing on the internet}
+		Internet is split up into Autonomous systems. Two different types: intra-AS (Interior Gateway Protocol IGP such as OSPF), inter-AS (EGP such as BGP) ; Advantages of approach: scalability and Administrative Autonomy \\
+		OSPF: Based on link-state and Dijkstra's shortes path ; Routers broadcast link-state information to all other routers in AS when a link changes and periodically ; Link weights are manually configured by admin \\
+		BGP: Routers maintain semi-permanent TCP connection: iBGP (within AS, done as a mesh all routers to all routers), eBGP (two routers in different AS (only direct neighbours)) ; 
+		BGP advertisements: AS-PATH: list of ASs through which the message has passed , NEXT-HOP: IP address of router that begins AS-path ;
+		BGP route selection algorithm: If any routes have locale preference, choose highest ; From remaining choose with shortest AS-PATH ; from remaining ones : closest NEXT-HOP ; remaining ones: selected based on BGP identifier. \\
+		IP-ANYCAST: BGP can be used to advertise same IP for multiple servers, allowing routers to select nearest one.
+		\section{Link Layer}
+		\subsection{Cyclic Reduncancy Check (CRC) codes}
+		Based on polyomial arithmetic: Each bit string can be represented as a polynomial with binary coëfificients ; 
+		All calculations done in mod 2 arithmetic without carrier or borrows ;
+		Addition and substraction are thus identical and equal to bitwise XOR ;
+		Multiplication by $2^k$ can be calculated by left shifting a bit pattern k places. \\
+		approach: Sender and receiver agree on r + 1 bit pattern, known as generator G ;
+		Sender appends r bits R to data D so that the rsulting d + r bit patterin is divisible by G ;
+		Receiver divides the bits, if remainder is not zero, error occured.
+		\subsubsection{How does sender compute R ?}
+		R = remainder($\dfrac{D \cdot 2^r}{G})$
+		\subsubsection{error detection probability of crc generators}
+		r = num of bits \\
+		Can detect up to r - 1 consecutive bit erros ;
+		Can also detect consecutive bit errors with length greater than r + 1 with probability $ 1 - 0.5^r$ ;
+		Can detect any number of odd bit errors
+		\subsection{Code Division Multiple Access (CDMA)}
+		Each sender is assigned a unique M-bit code ;
+		The code changes at a much faster rate than sequence of data bits ; 
+		Each transmitted bit is encoded by multiplying it by the code ;
+		Codes must be carefully chosen (orthogonal)
+		\subsubsection{Receiver}
+		Single sender: $d_i$: original bits: $d_i = \dfrac{\sum_{m = 1}^{M} Z_{i,m} \cdot c_m}{M}$
+		\subsubsection{Receiver}
+		interfering signals are assumed to be additive.
+		The value received during the mth mini-slot of the ith bit slot: $Z_{i,m}^* = \sum_{s = 1}^{N} Z_{i,m}{s}$
+		\subsection{Link-layer switches: forwarding and filtering}
+		Filtering: determine wheteer a frame should be forwarded or dropped \\
+		Forwarding: Determine interface to which frame should be directed (based on switch table) 
+		
+		
+																							
+	\end{multicols}
+\end{document}
